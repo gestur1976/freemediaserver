@@ -1,8 +1,8 @@
-# freemusicserver-cuda
+# freemediaserver
 
 ## (This project is currently under development. Please do not clone it as it is not yet functional.)
 
-https://hub.docker.com/r/gestur1976/freemusicserver-cuda
+https://hub.docker.com/r/gestur1976/freemediaserver
 
 This is a music web server. Simply search for a song and within seconds, you can listen to it, watch it, or download it. It's that easy!
 
@@ -17,7 +17,7 @@ You can either get the audio part of the video (.mp3) or the video itself (.webm
 To get it, use the following command:
 
 ```shell
-docker run -d --name freemusicserver-cuda -p [local-port]:80 -v [local-htdocs-folder]:/var/www gestur1976/freemusicserver-cuda:latest
+docker run -d --name freemediaserver -p [local-port]:80 -v [local-htdocs-folder]:/var/www gestur1976/freemediaserver:latest
 ```
 The -v option isn't mandatory, but as media files are downloaded into the htdocs folder, the container can become large. Therefore, it's recommended to map it to a local folder.
 
@@ -25,7 +25,7 @@ For example, to run it on port 7997 and use /var/www/freemusicserver as local st
 
 ```shell
 mkdir -p /var/www/freemusicserver
-docker run -d --name freemusicserver-cuda -p 7997:80 -v /var/www/freemusicserver:/var/www gestur1976/freemusicserver-cuda:latest
+docker run -d --name freemediaserver -p 7997:80 -v /var/www/freemusicserver:/var/www gestur1976/freemediaserver:latest
 ```
 
 Then, point your browser to http://localhost:7997/ and enjoy.
