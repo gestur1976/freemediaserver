@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "sanitize-filename": "^1.6.3",
+    "youtube-search-without-api-key": "^1.0.7"
+  }
+}
