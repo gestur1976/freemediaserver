@@ -1,7 +1,5 @@
 # freemediaserver
 
-## (This project is currently under development. Please do not clone it as it is not yet functional.)
-
 https://hub.docker.com/r/gestur1976/freemediaserver
 
 This is a music web server. Simply search for a song and within seconds, you can listen to it, watch it, or download it. It's that easy!
