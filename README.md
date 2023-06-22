@@ -4,9 +4,9 @@ https://hub.docker.com/r/gestur1976/freemediaserver
 
 This is a music web server. Simply search for a song and within seconds, you can listen to it, watch it, or download it. It's that easy!
 
-This project is a fork of gestur1976/free-music-web-server. This version utilizes the CUDA-accelerated version of ffmpeg and will support automatic subtitles using [Softcatala/whisper-ctranslate2](https://github.com/Softcatala/whisper-ctranslate2). This tool uses CTranslate2 and Faster-whisper, an OpenAI Whisper fork that is up to 4 times faster than openai/whisper, achieving the same accuracy while using less memory.
+This project is a fork of gestur1976/free-music-web-server.
 
-The project uses a [NVIDIA-CUDA Ubuntu](https://hub.docker.com/layers/nvidia/cuda/11.6.2-runtime-ubuntu20.04) based image with apache2, php8.0-fpm, node.js, and yt-dlp.
+The project uses [ubuntu:focal](https://hub.docker.com/layers/library/ubuntu/focal/images/sha256-554e40b15453c788ec799badf0f1ad05c3e5c735b53f940feb8f27cf2ec570c5?context=explore) as base image with apache2, php8.0-fpm, node.js, yt-dlp and ffmpeg.
 
 Upon launch, it starts a web server where you can search for a song (or anything else). It then downloads it from YouTube using yt-dlp, converts it to the required format using ffmpeg, and starts autoplaying within seconds.
 
