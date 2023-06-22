@@ -1,0 +1,1 @@
+docker build -t gestur1976/freemediaserver .
