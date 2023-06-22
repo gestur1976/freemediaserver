@@ -5,13 +5,12 @@ MAINTAINER "Josep Hervàs (josep.hervas@gmail.com")
 ENV OS_LOCALE="en_US.UTF-8" \
     LABEL="en_US.UTF-8" \
     LANGUAGE="en_US.UTF-8" \
-    LC_ALL="en_US.UTF-8" \
     LC_CTYPE="en_US.UTF-8" \
     DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && apt -y upgrade
 
-RUN apt update && apt -y install --no-install-recommends software-properties-common git openssl unzip wget curl ssh \
+RUN apt -y install --no-install-recommends software-properties-common git openssl unzip wget curl ssh \
     nano apt-transport-https ca-certificates gnupg gnupg2 gnupg1 cpp-10 joe
 
 # Install apache and php from https://deb.sury.org/ PPAs
@@ -32,26 +31,26 @@ RUN apt-get -y install php8.0 php8.0-common libapache2-mod-php8.0 php8.0-cgi php
     php8.0-soap php8.0-ssh2 php8.0-tidy php8.0-uploadprogress php8.0-uuid php8.0-xdebug php8.0-xml php8.0-xmlrpc \
     php8.0-xsl php8.0-yaml php8.0-zip php8.0-zmq
 
-RUN a2enmod proxy proxy_fcgi proxy_http proxy_balancer lbmethod_byrequests rewrite
+RUN a2enmod proxy proxy_fcgi proxy_http proxy_balancer php8.0 lbmethod_byrequests rewrite
 
 # Install node.js and package managers
 
-RUN apt -y install nodejs npm yarn ffmpeg curl python3 wget
+RUN apt -y install nodejs npm ffmpeg curl python3 wget
 
 # Install ffmpeg
 #RUN apt -y install ffmpeg
 
 RUN mkdir -p /opt && touch /firstrun && rm -f /usr/local/apache/htdocs/* 2>/dev/null || true
 
-ADD html /var/www/
-ADD mediaserver /usr/local/
-ADD conf/httpd.conf /etc/apache2/
+ADD html/ /opt/html/
+ADD mediaserver /usr/local/mediaserver/
+ADD conf/000-default.conf /etc/apache2/sites-available/
 ADD conf/www.conf /etc/php/php8.0/php-fpm.d/conf.d/
-ADD scripts/startup.sh /usr/local/bin/
+ADD scripts/ /usr/local/bin/
 
 RUN wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp && mv yt-dlp /usr/local/bin/ \
 	&& chmod +x /usr/local/bin/yt-dlp
 
-CMD ["/bin/bash"]
-
-#CMD /usr/local/bin/startup.sh
+#CMD ["/bin/bash"]
+CMD ["/usr/local/bin/startup.sh"]
+EXPOSE 80 7997

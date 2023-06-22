@@ -1,1 +1,1 @@
-docker build -t gestur1976/freemediaserver .cd
+docker build -t gestur1976/freemediaserver .

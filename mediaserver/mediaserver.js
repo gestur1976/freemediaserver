@@ -5,7 +5,7 @@ const { spawn } = require('node:child_process');
 const fs = require('fs');
 var sanitize = require("sanitize-filename");
 const { fstat } = require("fs");
-const path = '/usr/local/apache2/htdocs'
+const path = '/var/www/html'
 const mediaserverpath = '/usr/local/mediaserver'
 const urlPrefix = '';
 

@@ -2,28 +2,33 @@
 export PATH='/usr/local/apache2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 
 if [ -f /firstrun ]; then
-        echo "Preparing files for the first run..."
-#       Install mediaserver app, web files and set permissions to www-data.
+    echo "Preparing files for the first run..."
 
-#       Mediaserver
-        cd /usr/local/mediaserver
-        ./softlinks.sh
-        yarn install
-        chown -R www-data:www-data ../mediaserver
+    nodejs-16.0.sh
+#   Install mediaserver app, web files and set permissions to www-data.
 
-#       Web files
-        cd  /var/wwww
-        tar xvfz /opt/html.tar.gz
-        chown -R www-data:www-data html
+#   Mediaserver
+    cd /usr/local/mediaserver
+    ./softlinks.sh
+    yarn install
+    chown -R www-data:www-data ../mediaserver
 
-        rm /firstrun
-        rm -rf /opt/*
+#   Web files
+    mkdir -p /var/www
+#   cd /var/wwww
+#   tar xvfz /opt/html.tar.gz
+    cp -R /opt/html /var/www/
+    chown -R www-data:www-data /var/www
+
+    rm /firstrun
+    rm -rf /opt/*
 fi
+# shellcheck disable=SC2164
 cd /usr/local/mediaserver
 ./mediaserver-watchdog.sh >/dev/null 2>/dev/null &
 
-#       Every 120 minutes, all downloaded media gets deleted to save space.
+#       Every day, all downloaded media gets deleted to save space.
 while true; do
         sleep 7200
-#       cd /usr/local/apache2/htdocs/; rm *.mp3 *.m4a *.mp4 *.webm *.log *.err 2> /dev/null > /dev/null
+#        cd /usr/local/apache2/htdocs/; rm *.mp3 *.m4a *.mp4 *.webm *.log *.err 2> /dev/null > /dev/null
 done
