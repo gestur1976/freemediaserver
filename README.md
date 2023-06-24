@@ -19,11 +19,11 @@ docker run -d --name freemediaserver -p [local-port]:80 -v [local-htdocs-folder]
 ```
 The -v option isn't mandatory, but as media files are downloaded into the htdocs folder, the container can become large. Therefore, it's recommended to map it to a local folder.
 
-For example, to run it on port 7997 and use /var/www/freemusicserver as local storage, use the following commands:
+For example, to run it on port 7997 and use /var/www/freemediaserver as local storage, use the following commands:
 
 ```shell
-mkdir -p /var/www/freemusicserver
-docker run -d --name freemediaserver -p 7997:80 -v /var/www/freemusicserver:/var/www gestur1976/freemediaserver:latest
+mkdir -p /var/www/freemediaserver
+docker run -d --name freemediaserver -p 7997:80 -v /var/www/freemediaserver:/var/www gestur1976/freemediaserver:latest
 ```
 
 Then, point your browser to http://localhost:7997/ and enjoy.
