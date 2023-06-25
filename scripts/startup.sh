@@ -18,7 +18,7 @@ if [ -f /firstrun ]; then
 #   cd /var/wwww
 #   tar xvfz /opt/html.tar.gz
     cp -R /opt/html /var/www/
-    chown -R www-data:www-data /var/www
+    chown -R www-data:www-data /var/www/html
 
     rm /firstrun
     rm -rf /opt/*

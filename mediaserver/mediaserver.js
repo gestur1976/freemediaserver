@@ -124,6 +124,17 @@ async function youtubeSearch(queryObject, res, req, action) {
         });
         youtube_dl.on('close', function(code, signal) {
             if (fs.existsSync(fullpath + '.log')) fs.unlinkSync(fullpath + '.log');
+            if (!fs.existsSync(fullpath + '.vtt')) {
+                let video_file = '';
+                if (fs.existsSync(fullpath + '.webm')) {
+                    video_file = fullpath + '.webm';
+                }
+                else if (fs.existsSync(fullpath + '.mp4') {
+                    video_file = fullpath + '.webm';
+                }
+                if (video_file) {
+                    const whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--task', 'transcribe', fullpath + '.vtt'], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });                }
+            }
         });
 
         res.writeHead(302, {
