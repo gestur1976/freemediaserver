@@ -5,13 +5,12 @@ MAINTAINER "Josep Hervàs (josep.hervas@gmail.com")
 ENV OS_LOCALE="en_US.UTF-8" \
     LABEL="en_US.UTF-8" \
     LANGUAGE="en_US.UTF-8" \
-    LC_CTYPE="en_US.UTF-8" \
     DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && apt -y upgrade
 
 RUN apt -y install --no-install-recommends software-properties-common git openssl unzip wget curl ssh \
-    nano apt-transport-https ca-certificates gnupg gnupg2 gnupg1 cpp-10 joe
+    nano apt-transport-https ca-certificates gnupg gnupg2 gnupg1 cpp-10 joe python3.8
 
 # Install apache and php from https://deb.sury.org/ PPAs
 
@@ -35,12 +34,17 @@ RUN a2enmod proxy proxy_fcgi proxy_http proxy_balancer php8.0 lbmethod_byrequest
 
 # Install node.js and package managers
 
-RUN apt -y install nodejs npm ffmpeg curl python3 wget
+RUN apt -y install nodejs npm ffmpeg curl python3.9-full python3-pip wget
 
 # Install ffmpeg
-#RUN apt -y install ffmpeg
+RUN apt -y install ffmpeg
 
-RUN mkdir -p /opt && touch /firstrun && rm -f /usr/local/apache/htdocs/* 2>/dev/null || true
+# Install whisper-ctranslate2
+
+RUN pip3 install -U whisper-ctranslate2
+
+RUN mkdir -p /opt /var/www/html && touch /firstrun
+# && rm -f /usr/local/apache/htdocs/* 2>/dev/null || true
 
 ADD html/ /opt/html/
 ADD mediaserver /usr/local/mediaserver/
