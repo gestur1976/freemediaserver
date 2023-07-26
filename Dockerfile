@@ -41,9 +41,9 @@ RUN apt -y install ffmpeg
 
 # Install whisper-ctranslate2
 
-RUN pip3 install -U whisper-ctranslate2
+RUN pip3 install git+https://github.com/jordimas/whisper-ctranslate2.git
 
-RUN mkdir -p /opt /var/www/html && touch /firstrun
+RUN mkdir -p /opt /var/www/html && touch /firstrun && apt -y autoremove
 # && rm -f /usr/local/apache/htdocs/* 2>/dev/null || true
 
 ADD html/ /opt/html/

@@ -22,7 +22,8 @@ parse_str($_SERVER['QUERY_STRING'], $parameters);
     <div class="container mt-5 bg-dark text-light">
         <div class="row row-cols-1 row-cols-sm- row-cols-md-2 row-cols-lg-2 row-cols-xl-3 row-cols-xxl-3">
             <?php
-                foreach ($songsArray as $song) {
+                if (is_array($songsArray)) {
+                    foreach ($songsArray as $song) {
             ?>
                 <div class="col">
                     <div class="card bg-dark mt-4">
@@ -37,6 +38,7 @@ parse_str($_SERVER['QUERY_STRING'], $parameters);
                 </div>
             <?php
                 }
+            }
             ?>
         </div>
     </div>

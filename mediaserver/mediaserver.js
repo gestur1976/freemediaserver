@@ -42,21 +42,21 @@ async function youtubeSearch(queryObject, res, req, action) {
         const uri = encodeURI(filename);
         const fullpath = path + '/' + filename;
         format = type.localeCompare('video') ? format = 'bestaudio' : 'bestvideo[ext=webm]+bestaudio[ext=webm]/best[ext=webm]/best';
-/*        if (!format.localeCompare('bestaudio')) {
-            outputFormat = queryObject.output_format ? queryObject.output_format : 'mp3';
-            params_youtube_dl = ['-f', format, '-x', '--audio-format', outputFormat, '--prefer-ffmpeg', '--audio-quality', '0'];
-        } else 
-*/      {
+        /*        if (!format.localeCompare('bestaudio')) {
+        outputFormat = queryObject.output_format ? queryObject.output_format : 'mp3';
+        params_youtube_dl = ['-f', format, '-x', '--audio-format', outputFormat, '--prefer-ffmpeg', '--audio-quality', '0'];
+        } else
+        */      {
 
             outputFormat = queryObject.output_format ? queryObject.output_format : 'webm';
             format = 'bestvideo[width<=1920][ext=' + outputFormat + ']+bestaudio[ext=' + outputFormat + ']/best[width<=1920][ext=' + outputFormat + ']/best'
             params_youtube_dl = ['-f', format, '--merge-output-format', outputFormat, '--prefer-ffmpeg'];
         }
-        //console.log(uri);
-        //console.log(type);
-        //console.log(text);
+//console.log(uri);
+//console.log(type);
+//console.log(text);
         const parameters = new URLSearchParams('filename=' + uri + '&type=' + type + '&text=' + text + '&id=' + id);
-        //console.log('Parameters: ' + parameters);
+//console.log('Parameters: ' + parameters);
         if (restart) {
             if (fs.existsSync(fullpath + '.log'))
                 fs.unlinkSync(fullpath + '.log');
@@ -125,15 +125,12 @@ async function youtubeSearch(queryObject, res, req, action) {
         youtube_dl.on('close', function(code, signal) {
             if (fs.existsSync(fullpath + '.log')) fs.unlinkSync(fullpath + '.log');
             if (!fs.existsSync(fullpath + '.vtt')) {
-                let video_file = '';
                 if (fs.existsSync(fullpath + '.webm')) {
-                    video_file = fullpath + '.webm';
+                    whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small.en', '--print_colors', 'True', '--task', 'transcribe', fullpath + '.webm', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir', '/var/www/html', '--compute_type', 'int8'], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
                 }
-                else if (fs.existsSync(fullpath + '.mp4') {
-                    video_file = fullpath + '.webm';
+                else if (fs.existsSync(fullpath + '.mp4')) {
+                    whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small.en', '--print_colors', 'True', '--task', 'transcribe', fullpath + '.mp4', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir', '/var/www/html', '--compute_type', 'int8'], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
                 }
-                if (video_file) {
-                    const whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--task', 'transcribe', fullpath + '.vtt'], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });                }
             }
         });
 
