@@ -124,12 +124,20 @@ async function youtubeSearch(queryObject, res, req, action) {
         });
         youtube_dl.on('close', function(code, signal) {
             if (fs.existsSync(fullpath + '.log')) fs.unlinkSync(fullpath + '.log');
-            if (!fs.existsSync(fullpath + '.vtt')) {
+            if (!fs.existsSync(path + 'transcription/' + filename + '.vtt')) {
                 if (fs.existsSync(fullpath + '.webm')) {
-                    whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small.en', '--print_colors', 'True', '--task', 'transcribe', fullpath + '.webm', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir', '/var/www/html', '--compute_type', 'int8'], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
+                    const whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small', '--print_colors', 'True', '--task', 'transcribe', fullpath + '.webm', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir', path + '/transcription/', '--compute_type', 'int8'], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
                 }
                 else if (fs.existsSync(fullpath + '.mp4')) {
-                    whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small.en', '--print_colors', 'True', '--task', 'transcribe', fullpath + '.mp4', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir', '/var/www/html', '--compute_type', 'int8'], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
+                    const whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small', '--print_colors', 'True', '--task', 'transcribe', fullpath + '.mp4', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir', path + '/transcription/', '--compute_type', 'int8'], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
+                }
+            }
+            if (!fs.existsSync(path + 'translation/' + filename + '.vtt')) {
+                if (fs.existsSync(fullpath + '.webm')) {
+                    const whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small', '--print_colors', 'True', '--task', 'translate', fullpath + '.webm', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir', path + '/translation/', '--compute_type', 'int8'], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
+                }
+                else if (fs.existsSync(fullpath + '.mp4')) {
+                    const whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small', '--print_colors', 'True', '--task', 'translate', fullpath + '.mp4', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir',  path + '/translation/', '--compute_type', 'int8'], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
                 }
             }
         });

@@ -22,6 +22,7 @@ if [ -f /firstrun ]; then
 
     rm /firstrun
     rm -rf /opt/*
+    apt -y autoremove
 fi
 # shellcheck disable=SC2164
 cd /usr/local/mediaserver
