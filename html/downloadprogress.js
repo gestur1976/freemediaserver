@@ -7,6 +7,7 @@ var percent = 0;
 const fileprefix = '/' + document.querySelector('div.progress-text').getAttribute('filename');
 const logfile = fileprefix + '.log';
 const errorfile = fileprefix + '.err';
+const transcription =
 
 function setProgress(progress, eta, ffmpeg) {
     if (ffmpeg) {
