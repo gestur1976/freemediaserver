@@ -3,6 +3,7 @@ const url = require('url');
 const yt = require('youtube-search-without-api-key');
 const { spawn } = require('node:child_process');
 const fs = require('fs');
+const os = require('os');
 var sanitize = require("sanitize-filename");
 
 const DEBUG = true;
@@ -10,6 +11,7 @@ const DEBUG = true;
 const htmlPath = '/var/www/html'
 const mediaServerPath = '/usr/local/mediaserver'
 const urlPrefix = '';
+const numCpuCores = os.cpus().length;
 
 async function youtubeSearch(queryObject, res, req, action) {
     var params_youtube_dl = [];
@@ -46,31 +48,27 @@ async function youtubeSearch(queryObject, res, req, action) {
         const filename = sanitize(title).replace(/['\(\)\[\]\&#]/g, "");
         const uri = encodeURI(filename);
         const fullPath = htmlPath + '/' + filename;
-        const outputFormat = queryObject.output_format ? queryObject.output_format : 'webm';
+        let outputFormat = queryObject.output_format ? queryObject.output_format : 'webm';
         const format = 'bestvideo[width<=1920][ext=' + outputFormat + ']+bestaudio[ext=' + outputFormat + ']/best[width<=1920][ext=' + outputFormat + ']/best'
         let params_youtube_dl = ['-f', format, '--merge-output-format', outputFormat, '--prefer-ffmpeg'];
         const parameters = new URLSearchParams('filename=' + uri + '&type=' + type + '&text=' + searchText + '&id=' + id);
 
-        if (restart) {
-            if (fs.existsSync(fullPath + '.log'))
-                fs.unlinkSync(fullPath + '.log');
-            if (fs.existsSync(fullPath + '.err'))
-                fs.unlinkSync(fullPath + '.err');
-            if (fs.existsSync(fullPath + '.webm'))
-                fs.unlinkSync(fullPath + '.webm');
-            if (fs.existsSync(fullPath + '.mp4'))
-                fs.unlinkSync(fullPath + '.mp4');
-            if (fs.existsSync(fullPath + '.mp3'))
-                fs.unlinkSync(fullPath + '.mp3');
-        }
+    if (restart) {
+        ['.log', '.err', '.webm', '.mp4', '.mp3'].forEach(extension => {
+            const filePath = fullPath + extension;
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        });
+    }
 
-        if (fs.existsSync(fullPath + '.log')) {
-            res.writeHead(302, {
-                'Location': urlPrefix + '/waitingroom.php?' + parameters
-            });
-            res.end();
-            return;
-        }
+    if (fs.existsSync(fullPath + '.log')) {
+        res.writeHead(302, {
+            'Location': urlPrefix + '/waitingroom.php?' + parameters
+        });
+        res.end();
+        return;
+    }
 
         if (!type.localeCompare('video')) {
 
@@ -120,25 +118,12 @@ async function youtubeSearch(queryObject, res, req, action) {
             if (fs.existsSync(fullPath + '.log')) fs.unlinkSync(fullPath + '.log');
             if (!fs.existsSync(mediaServerPath + 'transcription/' + filename + '.vtt')) {
                 if (fs.existsSync(fullPath + '.webm')) {
-                    const whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small', '--print_colors', 'True', '--task', 'transcribe', fullPath + '.webm', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir', htmlPath + '/transcription/', '--compute_type', 'int8', '--threads', '"$(cat /proc/cpuinfo | grep "processor" | wc -l)"'], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
+                    const whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small', '--print_colors', 'True', '--task', 'transcribe', fullPath + '.webm', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir', htmlPath + '/transcription/', '--compute_type', 'int8', '--threads', numCpuCores], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
                 }
                 else if (fs.existsSync(fullPath + '.mp4')) {
-                    const whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small', '--print_colors', 'True', '--task', 'transcribe', fullPath + '.mp4', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir', htmlPath + '/transcription/', '--compute_type', 'int8', '--threads', '"$(cat /proc/cpuinfo | grep "processor" | wc -l)"'], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
+                    const whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small', '--print_colors', 'True', '--task', 'transcribe', fullPath + '.mp4', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir', htmlPath + '/transcription/', '--compute_type', 'int8', '--threads', numCpuCores], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
                 }
             }
-            /*
-             *   Disabled ATM.
-             */
-            /*
-            if (!fs.existsSync(path + 'translation/' + filename + '.vtt')) {
-                if (fs.existsSync(fullPath + '.webm')) {
-                    const whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small', '--print_colors', 'True', '--task', 'translate', fullPath + '.webm', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir', htmlPath + '/translation/', '--compute_type', 'int8', '--threads', '1'], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
-                }
-                else if (fs.existsSync(fullPath + '.mp4')) {
-                    const whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small', '--print_colors', 'True', '--task', 'translate', fullPath + '.mp4', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir',  htmlPath + '/translation/', '--compute_type', 'int8', '--threads', '1'], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
-                }
-            }
-            */
         });
 
         res.writeHead(302, {
@@ -153,6 +138,7 @@ http.createServer(function(req, res) {
     const action = /[^/]+/.exec(requestURL.pathname).toString();
     const queryObject = url.parse(requestURL, true).query;
 
+    DEBUG && console.log('Available CPU Cores:'+ numCpuCores);
     DEBUG && console.log('Request URL: ' + requestURL);
     DEBUG && console.log('Action: ' + action);
 
