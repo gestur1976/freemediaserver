@@ -118,10 +118,10 @@ async function youtubeSearch(queryObject, res, req, action) {
             if (fs.existsSync(fullPath + '.log')) fs.unlinkSync(fullPath + '.log');
             if (!fs.existsSync(mediaServerPath + 'transcription/' + filename + '.vtt')) {
                 if (fs.existsSync(fullPath + '.webm')) {
-                    const whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small', '--print_colors', 'True', '--task', 'transcribe', fullPath + '.webm', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir', htmlPath + '/transcription/', '--compute_type', 'int8', '--threads', numCpuCores], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
+                    const whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small', '--task', 'transcribe', fullPath + '.webm', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir', htmlPath + '/transcription/', '--compute_type', 'int8', '--threads', numCpuCores], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
                 }
                 else if (fs.existsSync(fullPath + '.mp4')) {
-                    const whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small', '--print_colors', 'True', '--task', 'transcribe', fullPath + '.mp4', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir', htmlPath + '/transcription/', '--compute_type', 'int8', '--threads', numCpuCores], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
+                    const whisper_ctranslate2 = spawn("/usr/local/bin/whisper-ctranslate2", ['--model', 'small', '--task', 'transcribe', fullPath + '.mp4', '--output_format', 'vtt', '--vad_filter', 'True', '--output_dir', htmlPath + '/transcription/', '--compute_type', 'int8', '--threads', numCpuCores], { detached: true, stdio: ['pipe', 'pipe', 'pipe'] });
                 }
             }
         });
