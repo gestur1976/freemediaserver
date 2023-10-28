@@ -1,17 +1,17 @@
 <?php
 require_once(__DIR__ . '/header.html');
-parse_str($_SERVER['QUERY_STRING'], $parameters);
+parse_str($_SERVER['QUERY_STRING'], $queryParameters);
 ?>
-<style>
-    <?php require_once(__DIR__ . '/waitingroom.css');?>
-</style>
+<link rel="stylesheet" href="/waitingroom.css">
 </head>
 <body>
-    <div class="title"<?php echo isset($parameters["type"])?' type="'.$parameters["type"].'"':'' ?><?php echo isset($parameters["id"])?' id="'.$parameters["id"].'"':''?><?php echo isset($parameters["text"])?' text="'.$parameters["text"].'"':'' ?>><?php echo $parameters["filename"]?></div>
-    <div class="progress-text" filename="<?php echo $parameters["filename"]?>"></div>
+    <div class="title"<?php echo isset($queryParameters["type"])?' type="'.$queryParameters["type"].'"':'' ?><?php echo isset($queryParameters["id"])?' id="'.$queryParameters["id"].'"':''?><?php echo isset($queryParameters["text"])?' text="'.$queryParameters["text"].'"':'' ?>><?php echo $queryParameters["filename"]?></div>
+    <div class="progress-text" filename="<?php echo $queryParameters["filename"]?>"></div>
         <div class="progress-bar">
         <div class="bar"></div>
     </div>
     <script src="/downloadprogress.js" async defer></script>
 <?php
 require_once(__DIR__ . '/footer.html');
+?>
+
